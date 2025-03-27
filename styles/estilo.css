@@ -10,15 +10,78 @@ h4{
     font-size: 16px;
 }
 
-.entradas,.entradas::placeholder{
+.logo{
+    width: 296px;
+    height: 149px;
+}
+
+.entradas{
     background-color: #322C3A;
     color: #fff;
+}
+
+.entradas::placeholder{
+    color: #322C3A;
+    color: #fff;
+}
+
+.entradas:focus::placeholder{
+    color: #322C3A;
 }
 
 .botoes_transacao {
     background-color: #AD8AFF;
 }
 
-.quantidade-valor {
+.quantidade_valor {
     width: 90%;
+}
+
+.saldo h3{
+    color: #AD8AFF;
+    font-size: 1rem;
+}
+
+.tabela {
+    width: 90%;
+}
+
+.div_tabela{
+    background-color: #322C3A;
+}
+
+.div_tabela h5,h4{
+    color: #AD8AFF;
+}
+
+.total {
+    background-color: #201924;
+    width: 90%;
+}
+
+.tabela table {
+    --bs-table-bg: transparent;
+    border-collapse: separate;
+}
+
+.tabela thead {
+    background-color: #201924;
+    color: white;
+}
+.tabela tbody tr {
+    background-color: #322C3A;
+}
+.tabela tbody tr:nth-child(odd) {
+    background-color: #201924;
+}
+.tabela tbody tr:hover {
+    background-color: #fff;
+}
+.tabela td {
+    color: #fff;
+    padding: 0.5rem;
+}
+.tabela th {
+    color: #fff;
+    padding: 0.5rem;
 }
