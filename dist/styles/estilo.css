@@ -1,0 +1,170 @@
+body {
+    background-color: #201924;
+}
+
+button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+    color: #fff;
+}
+
+h4 {
+    font-size: 16px;
+}
+
+.logo {
+    width: 296px;
+    height: 149px;
+}
+
+.logo2 {
+    width: 137px;
+    height: 68px;
+}
+
+.entradas {
+    background-color: #322C3A;
+    color: #fff;
+}
+
+.entradas::placeholder {
+    color: #322C3A;
+    color: #fff;
+}
+
+.entradas:focus::placeholder {
+    color: #322C3A;
+}
+
+.botoes_transacao {
+    background-color: #AD8AFF;
+}
+
+.saldo h3 {
+    color: #AD8AFF;
+    font-size: 1rem;
+}
+
+.tabela {
+    width: 90%;
+}
+
+.div_tabela {
+    background-color: #322C3A;
+    max-height: 60vh;
+}
+
+.div_tabela h5,
+.div_tabela h4 {
+    color: #AD8AFF;
+}
+
+.total {
+    background-color: #201924;
+    width: 90%;
+}
+
+.tabela table {
+    --bs-table-bg: transparent;
+    border-collapse: separate;
+}
+
+.tabela thead {
+    background-color: #201924;
+    color: white;
+}
+
+.tabela tbody tr {
+    background-color: #322C3A;
+}
+
+.tabela tbody tr:nth-child(odd) {
+    background-color: #201924;
+}
+
+.tabela tbody tr:hover {
+    background-color: #fff;
+}
+
+.tabela td {
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.tabela th {
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.tabela_scroll {
+    overflow-y: auto;
+    max-height: 60vh;
+    width: 90%;
+}
+
+.tabela tbody tr:hover {
+    background-color: #47E1B6;
+}
+
+.corpo_modal {
+    background-color: #201924;
+}
+
+.adicionar_excluir{
+    background-color: #AD8AFF;
+    color: #201924;
+    border-radius: 0;
+}
+
+.cancelar{
+    border: 3px solid #AD8AFF;
+    border-radius: 0;
+    background-color: transparent;
+    color: #AD8AFF;
+}
+
+#extrato {
+    display: none;
+}
+
+@media (min-width: 994px) {
+
+    .logo {
+        width: 234px;
+        height: 111px;
+    }
+
+    #nova_transacao {
+        background-color: #322C3A;
+        height: 100vh;
+        width: 25%;
+    }
+
+    #extrato {
+        width: 75%;
+    }
+
+    .div_tabela {
+        max-height: 70vh;
+    }
+
+    .entradas {
+        background-color: #201924;
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "outDir": "./dist/js/",
+        "noEmitOnError": true, //toda vez q identificar um erro, não vai gerar um arq js
+        "experimentalDecorators": true //para utilizar decorators
+    },
+    "include": [
+        "./src/*/"
+    ]
+}
