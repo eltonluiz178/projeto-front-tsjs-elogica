@@ -1,7 +1,8 @@
 import { conta } from "../types/Conta.js";
 import { ValidaNome } from "../types/Decorators.js";
-import { SaldoComponent } from "./saldo-component.js";
+import { SaldoComponent, TotalComponent } from "./saldo-component.js";
 import ExtratoComponent from "./tabela-produto-component.js";
+import { formatarMoeda } from "../utils/formatters.js";
 const elementoFormulario = document.getElementById("formulario");
 elementoFormulario?.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -16,7 +17,7 @@ elementoFormulario?.addEventListener("submit", function (event) {
         let tipoTransacao = inputTipoTransacao.value;
         let mercadoria = inputMercadoria.value;
         let quantidade = inputQuantidade.valueAsNumber;
-        let valor = inputValor.valueAsNumber;
+        let valor = parseFloat(inputValor.value);
         ValidaNome(mercadoria);
         const novaTransacao = {
             tipoTransacao: tipoTransacao,
@@ -24,10 +25,13 @@ elementoFormulario?.addEventListener("submit", function (event) {
             quantidade: quantidade,
             valor: valor
         };
+        document.getElementById("nomeProdutoAdicionar").textContent = `Produto : ${novaTransacao.mercadoria}`;
+        document.getElementById("quantidadeProdutoAdicionar").textContent = `Quantidade : ${novaTransacao.quantidade}`;
+        document.getElementById("valorProdutoAdicionar").textContent = `Valor : ${formatarMoeda(novaTransacao.valor)}`;
         conta.registrarTransacao(novaTransacao);
         ExtratoComponent.atualizar();
         SaldoComponent.atualizar();
-        console.log(quantidade, valor);
+        TotalComponent.atualizar();
     }
     catch (erro) {
         alert(erro.message);

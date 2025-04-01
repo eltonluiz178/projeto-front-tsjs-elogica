@@ -21,20 +21,15 @@ export class Conta {
     }
     compra(quantidade, valor, saldo) {
         const valorCompra = quantidade * valor;
-        this.total -= valorCompra;
         this.saldo -= valorCompra;
-        Armazenador.salvar("total", this.saldo);
-        Armazenador.salvar("saldo", this.saldo);
+        this.total -= valorCompra;
+        this.salvarMudancas(this.saldo, this.total);
     }
     venda(quantidade, valor) {
         const valorVenda = quantidade * valor;
-        this.total += valorVenda;
         this.saldo += valorVenda;
-        Armazenador.salvar("total", this.total);
-        Armazenador.salvar("saldo", this.saldo);
-    }
-    retornaTransacoes() {
-        return this.transacoes;
+        this.total += valorVenda;
+        this.salvarMudancas(this.saldo, this.total);
     }
     registrarTransacao(novaTransacao) {
         if (novaTransacao.tipoTransacao == TipoTransacao.COMPRA) {
@@ -48,6 +43,17 @@ export class Conta {
         }
         this.transacoes.push(novaTransacao);
         Armazenador.salvar("transacoes", this.transacoes);
+    }
+    salvarMudancas(saldo, total) {
+        const botaoAdicionar = document.getElementById("adicionar");
+        if (botaoAdicionar) {
+            const novoBotao = botaoAdicionar.cloneNode(true);
+            botaoAdicionar.parentNode?.replaceChild(novoBotao, botaoAdicionar);
+            novoBotao.addEventListener('click', () => {
+                Armazenador.salvar("saldo", saldo);
+                Armazenador.salvar("total", total);
+            });
+        }
     }
 }
 __decorate([
