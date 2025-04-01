@@ -71,14 +71,14 @@
                         <label for="inputQuantidade" class="form-label">
                             <h4>Quantidade</h4>
                         </label>
-                        <input type="text" class="form-control border-0 entradas" id="inputQuantidade"
+                        <input type="number" class="form-control border-0 entradas" id="inputQuantidade"
                             placeholder="00">
                     </div>
                     <div class="col-6">
                         <label for="inputValor" class="form-label">
                             <h4>Valor</h4>
                         </label>
-                        <input type="text" class="form-control border-0 entradas" id="inputValor"
+                        <input type="number" class="form-control border-0 entradas" id="inputValor"
                             placeholder="R$ 0,00">
                     </div>
                 </div>
@@ -125,15 +125,15 @@
             <div class="d-flex justify-content-between align-items-center m-3 m-lg-5">
                 <h2>Extrato</h2>
                 <div class="saldo">
-                    <h3 >Saldo</h3>
-                    <h3>R$ 0,00</h3>
+                    <h3>Saldo</h3>
+                    <h3 id="saldo">R$ 0,00</h3>
                 </div>
             </div>
             <div class="d-flex justify-content-center">
                 <div class="d-flex flex-column align-items-center rounded-3 border-0 border-secondary tabela div_tabela">
                     <div class="d-flex justify-content-center tabela_scroll">
                     <table class="table table-borderless table-striped tabela my-3">
-                        <thead>
+                        <thead class="tabela_cabeca">
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Mercadoria</th>
@@ -142,20 +142,13 @@
                                 <th scope="col" class="d-none d-md-block text-dark">.</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">-</th>
-                                <td>Iphone 16</td>
-                                <td>2</td>
-                                <td>R$ 8.000,00</td>
-                                <td class="d-none d-md-block"><button type="button" data-bs-toggle="modal" data-bs-target="#modalExcluir"><i class="bi bi-trash3"></i></button></td>
-                            </tr>
+                        <tbody id="corpo_tabela">
                         </tbody>
                     </table>
                     </div>
                     <div class="d-flex justify-content-around align-items-center total mb-3 p-2">
                         <h4>Total</h4>
-                        <h5>R$ 8.000,00</h5>
+                        <h5 id="total">R$ 8.000,00</h5>
                     </div>
                 </div>
             </div>

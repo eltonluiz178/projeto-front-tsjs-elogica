@@ -1,5 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Murecho:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Murecho:wght@100..900&display=swap');
+
 body {
     background-color: #201924;
+    font-family: "Murecho", sans-serif;
 }
 
 button {
@@ -61,8 +65,19 @@ h4 {
     font-size: 1rem;
 }
 
+.tabela_cabeca{
+    font-weight: 300;
+}
+
+.primeira_linha{
+    font-weight: 400;
+}
+
+
 .tabela {
     width: 90%;
+    font-family: "Murecho", sans-serif;
+    font-weight: 200;
 }
 
 .div_tabela {

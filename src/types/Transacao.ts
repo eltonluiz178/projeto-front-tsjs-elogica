@@ -1,6 +1,8 @@
+import { TipoTransacao } from "./TipoTransacao.js";
+
 export type Transacao = {
-    tipoTransacao: string,
-    mercadoria: string,
-    quantidade: number,
-    valor: number
+    tipoTransacao: TipoTransacao;
+    mercadoria: string;
+    quantidade: number;
+    valor: number;
 }

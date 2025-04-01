@@ -1,3 +1,5 @@
+import { Transacao } from "./Transacao";
+
 export class Armazenador {
     private constructor(){}
 
@@ -18,5 +20,9 @@ export class Armazenador {
         }
 
         return JSON.parse(valor) as T;
+    }
+
+    static deletar(chave: string): void {
+        localStorage.removeItem(chave);
     }
 }
