@@ -9,7 +9,8 @@ export class Conta {
         const valorCompra = quantidade * valor;
         saldo -= valorCompra;
         total -= valorCompra;
-        this.salvarMudancas(saldo, total);
+        Armazenador.salvar("saldo", saldo);
+        Armazenador.salvar("total", total);
     }
     venda(quantidade, valor) {
         let saldo = Armazenador.obter("saldo") || 0;
@@ -17,7 +18,8 @@ export class Conta {
         const valorVenda = quantidade * valor;
         saldo += valorVenda;
         total += valorVenda;
-        this.salvarMudancas(saldo, total);
+        Armazenador.salvar("saldo", saldo);
+        Armazenador.salvar("total", total);
     }
     registrarTransacao(novaTransacao) {
         if (novaTransacao.tipoTransacao == TipoTransacao.COMPRA) {
@@ -32,17 +34,6 @@ export class Conta {
         const transacoes = Armazenador.obter("transacoes") || [];
         transacoes.push(novaTransacao);
         Armazenador.salvar("transacoes", transacoes);
-    }
-    salvarMudancas(saldo, total) {
-        const botaoAdicionar = document.getElementById("adicionar");
-        if (botaoAdicionar) {
-            const novoBotao = botaoAdicionar.cloneNode(true);
-            botaoAdicionar.parentNode?.replaceChild(novoBotao, botaoAdicionar);
-            novoBotao.addEventListener('click', () => {
-                Armazenador.salvar("saldo", saldo);
-                Armazenador.salvar("total", total);
-            });
-        }
     }
 }
 export const conta = new Conta();

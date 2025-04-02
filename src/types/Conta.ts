@@ -13,7 +13,8 @@ export class Conta {
         const valorCompra = quantidade * valor;
         saldo -= valorCompra;
         total -= valorCompra;
-        this.salvarMudancas(saldo,total);
+        Armazenador.salvar("saldo",saldo);
+        Armazenador.salvar("total",total);
     }
 
     venda(quantidade: number, valor: number): void {
@@ -22,7 +23,8 @@ export class Conta {
         const valorVenda = quantidade * valor;
         saldo += valorVenda;
         total += valorVenda;
-        this.salvarMudancas(saldo, total);
+        Armazenador.salvar("saldo",saldo);
+        Armazenador.salvar("total",total);
     }
 
     registrarTransacao(novaTransacao: Transacao): void {
@@ -38,20 +40,6 @@ export class Conta {
         const transacoes = Armazenador.obter<Transacao[]>("transacoes") || [];
         transacoes.push(novaTransacao);
         Armazenador.salvar("transacoes", transacoes);
-    }
-
-    salvarMudancas(saldo: number, total: number): void {
-        const botaoAdicionar = document.getElementById("adicionar");
-
-        if (botaoAdicionar) {
-            const novoBotao = botaoAdicionar.cloneNode(true);
-            botaoAdicionar.parentNode?.replaceChild(novoBotao, botaoAdicionar);
-
-            novoBotao.addEventListener('click', () => {
-                Armazenador.salvar("saldo", saldo);
-                Armazenador.salvar("total", total);
-            });
-        }
     }
 }
 
