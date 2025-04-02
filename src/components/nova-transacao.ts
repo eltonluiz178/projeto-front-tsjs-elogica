@@ -1,5 +1,4 @@
 import { conta } from "../types/Conta.js";
-import { Validacao } from "../types/Decorators.js";
 import { TipoTransacao } from "../types/TipoTransacao.js";
 import { Transacao } from "../types/Transacao.js";
 import { SaldoComponent, TotalComponent } from "./saldo-component.js";
@@ -9,7 +8,6 @@ declare const bootstrap: any;
 
 const elementoFormulario = document.getElementById("formulario") as HTMLFormElement;
 const modalAdicionar = new bootstrap.Modal(document.getElementById("modalAdicionar")!);
-const botaoAdicionar = document.getElementById("adicionar");
 const inputValor = elementoFormulario.querySelector("#inputValor") as HTMLInputElement;
 
 if (inputValor) {
@@ -18,56 +16,76 @@ if (inputValor) {
     });
 }
 
-let transacaoPendente: Transacao | null = null;
-
-if (botaoAdicionar) {
-    botaoAdicionar.addEventListener("click", () => {
-        if (transacaoPendente) {
-            conta.registrarTransacao(transacaoPendente);
-
-            ExtratoComponent.atualizar();
-            SaldoComponent.atualizar();
-            TotalComponent.atualizar();
-
-            transacaoPendente = null;
-
-            modalAdicionar.hide();
-        }
-    });
+// Função para limpar o formulário
+function limparFormulario() {
+    elementoFormulario.reset();
+    if (inputValor) {
+        aplicarMascaraMonetaria(inputValor);
+    }
 }
 
-elementoFormulario?.addEventListener("submit", function (event) {
-    event.preventDefault();
-    try {
-        if (!elementoFormulario.checkValidity()) {
-            throw new Error("Preencha todos os campos do formulário !");
-        }
+// Função para preparar e mostrar o modal de confirmação
+function prepararModalConfirmacao(transacao: Transacao) {
+    document.getElementById("nomeProdutoAdicionar").textContent = `Produto: ${transacao.mercadoria}`;
+    document.getElementById("quantidadeProdutoAdicionar").textContent = `Quantidade: ${transacao.quantidade}`;
+    document.getElementById("valorProdutoAdicionar").textContent = `Valor: ${formatarMoeda(transacao.valor)}`;
+    modalAdicionar.show();
+    const botaoAdicionar = document.getElementById("adicionar");
 
+    // Verifica se o botão existe antes de tentar manipulá-lo
+    if (botaoAdicionar) {
+        botaoAdicionar.addEventListener("click", () => {
+            try {
+                conta.registrarTransacao(transacao);
+
+                // Atualiza os componentes
+                ExtratoComponent.atualizar();
+                SaldoComponent.atualizar();
+                TotalComponent.atualizar();
+
+                // Fecha o modal e limpa o formulário
+                modalAdicionar.hide();
+                limparFormulario();
+            } catch (erro) {
+                alert(erro.message);
+            }
+        });
+    } else {
+        console.error("O elemento pai do botão 'Adicionar' não foi encontrado no DOM.");
+    }
+}
+
+// Função para obter os dados do formulário
+function obterTransacaoDoFormulario(): Transacao | null {
+    try {
         const inputTipoTransacao = elementoFormulario.querySelector("#inputTransacao") as HTMLSelectElement;
         const inputMercadoria = elementoFormulario.querySelector("#inputMercadoria") as HTMLInputElement;
         const inputQuantidade = elementoFormulario.querySelector("#inputQuantidade") as HTMLInputElement;
 
-        let tipoTransacao: TipoTransacao = inputTipoTransacao.value as TipoTransacao;
-        let mercadoria: string = inputMercadoria.value;
-        let quantidade: number = inputQuantidade.valueAsNumber;
-        let valor: number = removerMascaraMonetaria(inputValor.value);
-
-        const novaTransacao: Transacao = {
-            tipoTransacao: tipoTransacao,
-            mercadoria: mercadoria,
-            quantidade: quantidade,
-            valor: valor
+        return {
+            tipoTransacao: inputTipoTransacao.value as TipoTransacao,
+            mercadoria: inputMercadoria.value,
+            quantidade: inputQuantidade.valueAsNumber,
+            valor: removerMascaraMonetaria(inputValor.value)
         };
+    } catch (erro) {
+        console.error("Erro ao obter dados do formulário:", erro);
+        return null;
+    }
+}
 
-        Validacao(novaTransacao);
+// Configura o evento de envio do formulário
+elementoFormulario?.addEventListener("submit", function (event) {
+    event.preventDefault();
+    try {
+        if (!elementoFormulario.checkValidity()) {
+            throw new Error("Preencha todos os campos do formulário!");
+        }
 
-        transacaoPendente = novaTransacao;
-
-        document.getElementById("nomeProdutoAdicionar").textContent = `Produto : ${novaTransacao.mercadoria}`;
-        document.getElementById("quantidadeProdutoAdicionar").textContent = `Quantidade : ${novaTransacao.quantidade}`;
-        document.getElementById("valorProdutoAdicionar").textContent = `Valor : ${formatarMoeda(novaTransacao.valor)}`;
-
-        modalAdicionar.show();
+        const transacao = obterTransacaoDoFormulario();
+        if (transacao) {
+            prepararModalConfirmacao(transacao);
+        }
     } catch (erro) {
         alert(erro.message);
     }

@@ -1,5 +1,3 @@
-import { Transacao } from "./Transacao";
-
 export class Armazenador {
     private constructor(){}
 
