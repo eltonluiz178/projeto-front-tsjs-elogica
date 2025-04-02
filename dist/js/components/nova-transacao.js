@@ -1,13 +1,25 @@
 import { conta } from "../types/Conta.js";
+import { Transacao } from "../types/Transacao.js";
 import { SaldoComponent, TotalComponent } from "./saldo-component.js";
 import ExtratoComponent from "./tabela-produto-component.js";
-import { aplicarMascaraMonetaria, formatarMoeda, removerMascaraMonetaria } from "../utils/formatters.js";
+import { aplicarMascaraMonetaria, formatarMoeda, mascaraQuantidade, removerMascaraMonetaria } from "../utils/formatters.js";
+import { Validacao } from "../types/Decorators.js";
 const elementoFormulario = document.getElementById("formulario");
 const modalAdicionar = new bootstrap.Modal(document.getElementById("modalAdicionar"));
 const inputValor = elementoFormulario.querySelector("#inputValor");
+const inputQuantidade = elementoFormulario.querySelector("#inputQuantidade");
+const botaoLimpar = document.querySelector("#botaoLimpar");
+botaoLimpar.addEventListener("click", () => {
+    limparFormulario();
+});
 if (inputValor) {
     inputValor.addEventListener("input", () => {
         aplicarMascaraMonetaria(inputValor);
+    });
+}
+if (inputQuantidade) {
+    inputQuantidade.addEventListener("input", () => {
+        mascaraQuantidade(inputQuantidade);
     });
 }
 // Função para limpar o formulário
@@ -15,6 +27,9 @@ function limparFormulario() {
     elementoFormulario.reset();
     if (inputValor) {
         aplicarMascaraMonetaria(inputValor);
+    }
+    if (inputQuantidade) {
+        mascaraQuantidade(inputQuantidade);
     }
 }
 // Função para preparar e mostrar o modal de confirmação
@@ -24,43 +39,57 @@ function prepararModalConfirmacao(transacao) {
     document.getElementById("valorProdutoAdicionar").textContent = `Valor: ${formatarMoeda(transacao.valor)}`;
     modalAdicionar.show();
     const botaoAdicionar = document.getElementById("adicionar");
-    // Verifica se o botão existe antes de tentar manipulá-lo
+    const botaoCancelar = document.getElementById("cancelar"); // Botão "Cancelar" do modal
+    // Função para adicionar a transação
+    const adicionarTransacao = () => {
+        try {
+            conta.registrarTransacao(transacao);
+            // Atualiza os componentes
+            ExtratoComponent.atualizar();
+            SaldoComponent.atualizar();
+            TotalComponent.atualizar();
+            // Fecha o modal e limpa o formulário
+            modalAdicionar.hide();
+            limparFormulario();
+        }
+        catch (erro) {
+            alert(erro.message);
+        }
+        finally {
+            botaoAdicionar.removeEventListener("click", adicionarTransacao);
+        }
+    };
+    // Adiciona o evento de clique ao botão "Adicionar"
     if (botaoAdicionar) {
-        botaoAdicionar.addEventListener("click", () => {
-            try {
-                conta.registrarTransacao(transacao);
-                // Atualiza os componentes
-                ExtratoComponent.atualizar();
-                SaldoComponent.atualizar();
-                TotalComponent.atualizar();
-                // Fecha o modal e limpa o formulário
-                modalAdicionar.hide();
-                limparFormulario();
-            }
-            catch (erro) {
-                alert(erro.message);
-            }
+        botaoAdicionar.addEventListener("click", adicionarTransacao);
+    }
+    // Remove o evento de clique se o modal for cancelado
+    if (botaoCancelar) {
+        botaoCancelar.addEventListener("click", () => {
+            botaoAdicionar.removeEventListener("click", adicionarTransacao);
+            modalAdicionar.hide();
         });
     }
-    else {
-        console.error("O elemento pai do botão 'Adicionar' não foi encontrado no DOM.");
-    }
+    // Remove o evento de clique se o modal for fechado de outra forma
+    modalAdicionar._element.addEventListener("hidden.bs.modal", () => {
+        botaoAdicionar.removeEventListener("click", adicionarTransacao);
+    });
 }
 // Função para obter os dados do formulário
 function obterTransacaoDoFormulario() {
     try {
         const inputTipoTransacao = elementoFormulario.querySelector("#inputTransacao");
         const inputMercadoria = elementoFormulario.querySelector("#inputMercadoria");
-        const inputQuantidade = elementoFormulario.querySelector("#inputQuantidade");
-        return {
-            tipoTransacao: inputTipoTransacao.value,
-            mercadoria: inputMercadoria.value,
-            quantidade: inputQuantidade.valueAsNumber,
-            valor: removerMascaraMonetaria(inputValor.value)
-        };
+        const tipoTransacao = inputTipoTransacao.value;
+        const mercadoria = inputMercadoria.value;
+        const quantidade = removerMascaraMonetaria(inputQuantidade.value);
+        const valor = removerMascaraMonetaria(inputValor.value);
+        const novaTransacao = new Transacao(tipoTransacao, mercadoria, quantidade, valor);
+        Validacao(novaTransacao);
+        return novaTransacao;
     }
     catch (erro) {
-        console.error("Erro ao obter dados do formulário:", erro);
+        alert(erro.message);
         return null;
     }
 }

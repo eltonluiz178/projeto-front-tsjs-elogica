@@ -11,6 +11,11 @@ export function aplicarMascaraMonetaria(input) {
     }).format(valorNumerico);
     input.value = valorFormatado;
 }
+export function mascaraQuantidade(input) {
+    let quantidade = input.value;
+    quantidade = quantidade.replace(/\D/g, "");
+    input.value = quantidade;
+}
 export function removerMascaraMonetaria(valorFormatado) {
     const valorNumerico = valorFormatado
         .replace(/[^\d,-]/g, "")

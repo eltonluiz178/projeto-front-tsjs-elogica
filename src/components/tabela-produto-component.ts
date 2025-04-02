@@ -4,59 +4,63 @@ import { Transacao } from "../types/Transacao.js";
 import { formatarMoeda } from "../utils/formatters.js";
 import { SaldoComponent, TotalComponent } from "./saldo-component.js";
 
-const corpoTabela: HTMLTableSectionElement = document.getElementById("corpo_tabela") as HTMLTableSectionElement;
-
 atualizarExtrato();
 
 function excluirTransacoes(transacao: Transacao): void {
-    document.getElementById("nomeProduto").textContent = `Produto : ${transacao.mercadoria}`;
-    document.getElementById("quantidadeProduto").textContent = `Quantidade : ${transacao.quantidade}`;
-    document.getElementById("valorProduto").textContent = `Valor : ${formatarMoeda(transacao.valor)}`;
 
-    const botaoLixeira = document.getElementById("lixeira");
+    const transacoes = Armazenador.obter<Transacao[]>("transacoes") || [];
+    const novasTransacoes = transacoes.filter(t => t.idTransacao !== transacao.idTransacao);
 
-    if (botaoLixeira) {
-        // Remove listeners anteriores para evitar duplicação
-        const novoBotao = botaoLixeira.cloneNode(true);
-        botaoLixeira.parentNode?.replaceChild(novoBotao, botaoLixeira);
+    let saldo: number = parseFloat(Armazenador.obter("saldo") || "0");
+    let total: number = parseFloat(Armazenador.obter("total") || "0");
 
-        // Adiciona um único listener ao novo botão
-        novoBotao.addEventListener('click', () => {
-            const transacoes = Armazenador.obter<Transacao[]>("transacoes") || [];
-            const novasTransacoes = transacoes.filter(t => t.mercadoria !== transacao.mercadoria);
+    if (transacao.tipoTransacao == TipoTransacao.COMPRA) {
+        saldo += transacao.valor * transacao.quantidade;
+        total += transacao.valor * transacao.quantidade;
+    }
+    else {
+        saldo -= transacao.valor * transacao.quantidade;
+        total -= transacao.valor * transacao.quantidade;
+    }
 
-            let saldo: number = parseFloat(Armazenador.obter("saldo") || "0");
-            let total: number = parseFloat(Armazenador.obter("total") || "0");
+    Armazenador.deletar("transacoes");
+    Armazenador.deletar("saldo");
+    Armazenador.deletar("total");
 
-            if (transacao.tipoTransacao == TipoTransacao.COMPRA) {
-                saldo += transacao.valor * transacao.quantidade;
-                total += transacao.valor * transacao.quantidade;
-            }
-            else {
-                saldo -= transacao.valor * transacao.quantidade;
-                total -= transacao.valor * transacao.quantidade;
-            }
+    Armazenador.salvar("transacoes", novasTransacoes);
+    Armazenador.salvar("saldo", saldo);
+    Armazenador.salvar("total", total);
 
-            Armazenador.deletar("transacoes");
-            Armazenador.deletar("saldo");
-            Armazenador.deletar("total");
+    atualizarExtrato();
+    SaldoComponent.atualizar();
+    TotalComponent.atualizar();
+}
 
-            Armazenador.salvar("transacoes", novasTransacoes);
-            Armazenador.salvar("saldo", saldo);
-            Armazenador.salvar("total", total);
-            
-            atualizarExtrato();
-            SaldoComponent.atualizar();
-            TotalComponent.atualizar();
+function verificaBotao(transacao: Transacao): boolean{
+    const botaoExcluir = document.getElementById("botaoExcluir");
+    const nomeProduto = document.getElementById("nomeProduto");
+    const quantidadeProduto = document.getElementById("quantidadeProduto");
+    const valorProduto = document.getElementById("valorProduto");
+
+    nomeProduto.textContent = `Produto : ${transacao.mercadoria}`;
+    quantidadeProduto.textContent = `Quantidade : ${transacao.quantidade}`;
+    valorProduto.textContent = `Produto : ${transacao.valor}`;
+
+    if(botaoExcluir){
+        botaoExcluir.addEventListener("click", () => {
+            excluirTransacoes(transacao);
+            return true;
         });
     }
+    return false;
 }
 
 function atualizarExtrato(): void {
+    const corpoTabela: HTMLTableSectionElement = document.getElementById("corpo_tabela") as HTMLTableSectionElement;
     corpoTabela.innerHTML = '';
     const transacoes = Armazenador.obter<Transacao[]>("transacoes") || [];
 
-    transacoes.forEach(transacao => {
+    transacoes.map(transacao => {
         const sinal = transacao.tipoTransacao == TipoTransacao.COMPRA ? '-' : '+';
         const linha = document.createElement('tr');
         linha.innerHTML = `
@@ -67,7 +71,19 @@ function atualizarExtrato(): void {
             <td class="d-none d-md-flex justify-content-center"><button type="button" data-bs-toggle="modal" data-bs-target="#modalExcluir"><i class="bi bi-trash3 lixeira"></i></button></td>
         `
 
-        excluirTransacoes(transacao)
+        const botaoExcluir = linha.querySelector(".lixeira"); 
+
+        if (botaoExcluir) {
+            botaoExcluir.addEventListener("click", (event) => {
+                if(verificaBotao(transacao)){
+                    const icone = event.target as HTMLElement;
+                    const linha = icone.closest("tr");
+                    if (linha) {
+                        linha.remove();
+                    }
+                }
+            })
+        }
 
         corpoTabela.appendChild(linha);
     });
