@@ -79,8 +79,7 @@
                         <label for="inputValor" class="form-label">
                             <h4>Valor</h4>
                         </label>
-                        <input type="text" class="form-control border-0 entradas" id="inputValor"
-                            placeholder="R$ 0,00">
+                        <input type="text" class="form-control border-0 entradas" id="inputValor" placeholder="R$ 0,00">
                     </div>
                 </div>
                 <div class="text-end">
@@ -219,42 +218,42 @@
                         <div class="d-flex justify-content-around">
                             <button type="button" class="btn btn-secondary cancelar"
                                 data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary adicionar_excluir border-0"><i id="adicionar">Adicionar</i></button>
+                            <button type="button" class="btn btn-primary adicionar_excluir border-0"
+                                data-bs-dismiss="modal"><i id="adicionar">Adicionar</i></button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        document.getElementById("meuBotao").addEventListener("click", function () {
-            event.preventDefault();
-            const secao = document.getElementById("extrato");
-            const secaoAnterior = document.getElementById("nova_transacao");
+        <script>
+            document.getElementById("meuBotao").addEventListener("click", function () {
+                event.preventDefault();
+                const secao = document.getElementById("extrato");
+                const secaoAnterior = document.getElementById("nova_transacao");
 
-            secao.style.display = "block";
-            secaoAnterior.style.display = "none";
+                secao.style.display = "block";
+                secaoAnterior.style.display = "none";
 
-            secao.scrollIntoView({ behavior: "smooth" });
-        });
+                secao.scrollIntoView({ behavior: "smooth" });
+            });
 
-        document.getElementById("meuBotaoTransacao").addEventListener("click", function () {
-            event.preventDefault();
-            const secao = document.getElementById("nova_transacao");
-            const secaoAnterior = document.getElementById("extrato");
+            document.getElementById("meuBotaoTransacao").addEventListener("click", function () {
+                event.preventDefault();
+                const secao = document.getElementById("nova_transacao");
+                const secaoAnterior = document.getElementById("extrato");
 
-            secao.style.display = "block";
-            secaoAnterior.style.display = "none";
+                secao.style.display = "block";
+                secaoAnterior.style.display = "none";
 
-            secao.scrollIntoView({ behavior: "smooth" });
-        });
-    </script>
+                secao.scrollIntoView({ behavior: "smooth" });
+            });
+        </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script type="module" src="./js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+        <script type="module" src="./js/main.js"></script>
 </body>
 
 </html>

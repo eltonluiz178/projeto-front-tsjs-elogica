@@ -17,11 +17,25 @@ function excluirTransacoes(transacao) {
         novoBotao.addEventListener('click', () => {
             const transacoes = Armazenador.obter("transacoes") || [];
             const novasTransacoes = transacoes.filter(t => t.mercadoria !== transacao.mercadoria);
+            let saldo = parseFloat(Armazenador.obter("saldo") || "0");
+            let total = parseFloat(Armazenador.obter("total") || "0");
+            if (transacao.tipoTransacao == TipoTransacao.COMPRA) {
+                saldo += transacao.valor * transacao.quantidade;
+                total += transacao.valor * transacao.quantidade;
+            }
+            else {
+                saldo -= transacao.valor * transacao.quantidade;
+                total -= transacao.valor * transacao.quantidade;
+            }
             Armazenador.deletar("transacoes");
+            Armazenador.deletar("saldo");
+            Armazenador.deletar("total");
             Armazenador.salvar("transacoes", novasTransacoes);
+            Armazenador.salvar("saldo", saldo);
+            Armazenador.salvar("total", total);
+            atualizarExtrato();
             SaldoComponent.atualizar();
             TotalComponent.atualizar();
-            atualizarExtrato();
         });
     }
 }

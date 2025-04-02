@@ -1,7 +1,7 @@
 export function ValidaCompra(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = function (quantidade: number, valor: number, saldo: number){
+    descriptor.value = function (quantidade: number, valor: number){
         if(quantidade <= 0 || !quantidade) {
             throw new Error("Quantidade é inválida!");
         }
@@ -9,10 +9,7 @@ export function ValidaCompra(target: any, propertyKey: string, descriptor: Prope
         if(valor <= 0 || !valor) {
             throw new Error("Valor do produto é inválido!");
         }
-
-        if(saldo <= 0 || ( valor * quantidade ) > saldo ){
-            throw new Error("Saldo insufisciente para realizar operação.");
-        }
+        
         return originalMethod.apply(this, [quantidade, valor]);
     }
     return descriptor;

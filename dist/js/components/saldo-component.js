@@ -1,4 +1,4 @@
-import { conta } from "../types/Conta.js";
+import { Armazenador } from "../types/Armazenador.js";
 import { formatarMoeda } from "../utils/formatters.js";
 const elementoSaldo = document.getElementById("saldo");
 const elementoTotal = document.getElementById("total");
@@ -6,12 +6,14 @@ renderizarSaldo();
 renderizarTotal();
 export function renderizarSaldo() {
     if (elementoSaldo != null) {
-        elementoSaldo.textContent = formatarMoeda(conta.getSaldo());
+        const saldo = Armazenador.obter("saldo") || 0;
+        elementoSaldo.textContent = formatarMoeda(saldo);
     }
 }
 export function renderizarTotal() {
     if (elementoTotal != null) {
-        elementoTotal.textContent = formatarMoeda(conta.getTotal());
+        const total = Armazenador.obter("total") || 0;
+        elementoTotal.textContent = formatarMoeda(total);
     }
 }
 export const TotalComponent = {

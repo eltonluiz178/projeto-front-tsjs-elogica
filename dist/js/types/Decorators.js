@@ -1,14 +1,11 @@
 export function ValidaCompra(target, propertyKey, descriptor) {
     const originalMethod = descriptor.value;
-    descriptor.value = function (quantidade, valor, saldo) {
+    descriptor.value = function (quantidade, valor) {
         if (quantidade <= 0 || !quantidade) {
             throw new Error("Quantidade é inválida!");
         }
         if (valor <= 0 || !valor) {
             throw new Error("Valor do produto é inválido!");
-        }
-        if (saldo <= 0 || (valor * quantidade) > saldo) {
-            throw new Error("Saldo insufisciente para realizar operação.");
         }
         return originalMethod.apply(this, [quantidade, valor]);
     };

@@ -1,5 +1,4 @@
 import { Armazenador } from "../types/Armazenador.js";
-import { conta } from "../types/Conta.js";
 import { TipoTransacao } from "../types/TipoTransacao.js";
 import { Transacao } from "../types/Transacao.js";
 import { formatarMoeda } from "../utils/formatters.js";
@@ -26,12 +25,29 @@ function excluirTransacoes(transacao: Transacao): void {
             const transacoes = Armazenador.obter<Transacao[]>("transacoes") || [];
             const novasTransacoes = transacoes.filter(t => t.mercadoria !== transacao.mercadoria);
 
+            let saldo: number = parseFloat(Armazenador.obter("saldo") || "0");
+            let total: number = parseFloat(Armazenador.obter("total") || "0");
+
+            if (transacao.tipoTransacao == TipoTransacao.COMPRA) {
+                saldo += transacao.valor * transacao.quantidade;
+                total += transacao.valor * transacao.quantidade;
+            }
+            else {
+                saldo -= transacao.valor * transacao.quantidade;
+                total -= transacao.valor * transacao.quantidade;
+            }
+
             Armazenador.deletar("transacoes");
+            Armazenador.deletar("saldo");
+            Armazenador.deletar("total");
+
             Armazenador.salvar("transacoes", novasTransacoes);
+            Armazenador.salvar("saldo", saldo);
+            Armazenador.salvar("total", total);
             
+            atualizarExtrato();
             SaldoComponent.atualizar();
             TotalComponent.atualizar();
-            atualizarExtrato();
         });
     }
 }
@@ -52,7 +68,7 @@ function atualizarExtrato(): void {
         `
 
         excluirTransacoes(transacao)
-        
+
         corpoTabela.appendChild(linha);
     });
 }

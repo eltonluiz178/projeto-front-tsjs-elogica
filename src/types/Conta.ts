@@ -4,40 +4,33 @@ import { TipoTransacao } from "./TipoTransacao.js";
 import { Transacao } from "./Transacao.js";
 
 export class Conta {
-    protected total: number = Armazenador.obter<number>("total") || 0;
-    protected saldo: number = Armazenador.obter<number>("saldo") || 0;
-    protected transacoes: Transacao[] = Armazenador.obter<Transacao[]>("transacoes") || [];
 
     constructor() {
     }
 
-    getTotal(): number {
-        return this.total;
-    }
-
-    getSaldo(): number {
-        return this.saldo;
-    }
-
     @ValidaCompra
-    compra(quantidade: number, valor: number, saldo: number): void {
+    compra(quantidade: number, valor: number): void {
+        let saldo: number = Armazenador.obter<number>("saldo") || 0;
+        let total: number = Armazenador.obter<number>("total") || 0;
         const valorCompra = quantidade * valor;
-        this.saldo -= valorCompra;
-        this.total -= valorCompra;
-        this.salvarMudancas(this.saldo, this.total);
+        saldo -= valorCompra;
+        total -= valorCompra;
+        this.salvarMudancas(saldo,total);
     }
 
     @ValidaVenda
     venda(quantidade: number, valor: number): void {
+        let saldo: number = Armazenador.obter<number>("saldo") || 0;
+        let total: number = Armazenador.obter<number>("total") || 0;
         const valorVenda = quantidade * valor;
-        this.saldo += valorVenda;
-        this.total += valorVenda;
-        this.salvarMudancas(this.saldo, this.total);
+        saldo += valorVenda;
+        total += valorVenda;
+        this.salvarMudancas(saldo, total);
     }
 
     registrarTransacao(novaTransacao: Transacao): void {
         if (novaTransacao.tipoTransacao == TipoTransacao.COMPRA) {
-            this.compra(novaTransacao.quantidade, novaTransacao.valor, this.total);
+            this.compra(novaTransacao.quantidade, novaTransacao.valor);
         }
         else if (novaTransacao.tipoTransacao == TipoTransacao.VENDA) {
             this.venda(novaTransacao.quantidade, novaTransacao.valor);
@@ -45,8 +38,9 @@ export class Conta {
         else {
             throw new Error("Tipo de transação inválido.")
         }
-        this.transacoes.push(novaTransacao);
-        Armazenador.salvar("transacoes", this.transacoes);
+        const transacoes = Armazenador.obter<Transacao[]>("transacoes") || [];
+        transacoes.push(novaTransacao);
+        Armazenador.salvar("transacoes", transacoes);
     }
 
     salvarMudancas(saldo: number, total: number): void {

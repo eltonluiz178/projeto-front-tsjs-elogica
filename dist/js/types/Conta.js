@@ -8,32 +8,27 @@ import { Armazenador } from "./Armazenador.js";
 import { ValidaCompra, ValidaVenda } from "./Decorators.js";
 import { TipoTransacao } from "./TipoTransacao.js";
 export class Conta {
-    total = Armazenador.obter("total") || 0;
-    saldo = Armazenador.obter("saldo") || 0;
-    transacoes = Armazenador.obter("transacoes") || [];
     constructor() {
     }
-    getTotal() {
-        return this.total;
-    }
-    getSaldo() {
-        return this.saldo;
-    }
-    compra(quantidade, valor, saldo) {
+    compra(quantidade, valor) {
+        let saldo = Armazenador.obter("saldo") || 0;
+        let total = Armazenador.obter("total") || 0;
         const valorCompra = quantidade * valor;
-        this.saldo -= valorCompra;
-        this.total -= valorCompra;
-        this.salvarMudancas(this.saldo, this.total);
+        saldo -= valorCompra;
+        total -= valorCompra;
+        this.salvarMudancas(saldo, total);
     }
     venda(quantidade, valor) {
+        let saldo = Armazenador.obter("saldo") || 0;
+        let total = Armazenador.obter("total") || 0;
         const valorVenda = quantidade * valor;
-        this.saldo += valorVenda;
-        this.total += valorVenda;
-        this.salvarMudancas(this.saldo, this.total);
+        saldo += valorVenda;
+        total += valorVenda;
+        this.salvarMudancas(saldo, total);
     }
     registrarTransacao(novaTransacao) {
         if (novaTransacao.tipoTransacao == TipoTransacao.COMPRA) {
-            this.compra(novaTransacao.quantidade, novaTransacao.valor, this.total);
+            this.compra(novaTransacao.quantidade, novaTransacao.valor);
         }
         else if (novaTransacao.tipoTransacao == TipoTransacao.VENDA) {
             this.venda(novaTransacao.quantidade, novaTransacao.valor);
@@ -41,8 +36,9 @@ export class Conta {
         else {
             throw new Error("Tipo de transação inválido.");
         }
-        this.transacoes.push(novaTransacao);
-        Armazenador.salvar("transacoes", this.transacoes);
+        const transacoes = Armazenador.obter("transacoes") || [];
+        transacoes.push(novaTransacao);
+        Armazenador.salvar("transacoes", transacoes);
     }
     salvarMudancas(saldo, total) {
         const botaoAdicionar = document.getElementById("adicionar");
