@@ -1,5 +1,4 @@
 import { Armazenador } from "./Armazenador.js";
-import { ValidaCompra, ValidaVenda } from "./Decorators.js";
 import { TipoTransacao } from "./TipoTransacao.js";
 import { Transacao } from "./Transacao.js";
 
@@ -8,7 +7,6 @@ export class Conta {
     constructor() {
     }
 
-    @ValidaCompra
     compra(quantidade: number, valor: number): void {
         let saldo: number = Armazenador.obter<number>("saldo") || 0;
         let total: number = Armazenador.obter<number>("total") || 0;
@@ -18,7 +16,6 @@ export class Conta {
         this.salvarMudancas(saldo,total);
     }
 
-    @ValidaVenda
     venda(quantidade: number, valor: number): void {
         let saldo: number = Armazenador.obter<number>("saldo") || 0;
         let total: number = Armazenador.obter<number>("total") || 0;
